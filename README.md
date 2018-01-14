@@ -1,7 +1,7 @@
 # Open/Closed Principle
 
 ### solid-new-team
-solid-new-team created by GitHub Classroom
+
 
 Wykorzystany gem:: [Battleship](https://github.com/szymon33/battleship/)
 
@@ -15,3 +15,6 @@ Gra kończy się kiedy gracz zatopi wszystkie statki przeciwnika lub poprzez wyj
 gry przy pomocy komendy 'Q'.
 
 #### Dodana funkcjonalność / zmiana: Wybór wielkości obszaru do gry w statki. 
+
+
+TODO refaktoryzacja + wyrównanie kolumn planszy
