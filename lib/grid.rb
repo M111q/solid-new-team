@@ -63,8 +63,12 @@ def board
   digits_writer
     Grid.row
   @matrix.each_with_index do |grow, index|
+    if index <26
     Grid.row(" #{AXE_LETTERS[index]}   #{grow.join(' ')}  #{AXE_LETTERS[index]}")
+  else
+    Grid.row(" #{AXE_LETTERS[index]}  #{grow.join(' ')}  #{AXE_LETTERS[index]}")
   end
+end
   digits_writer
 #  Grid.row '    ' + AXE_DIGITS.join(' ')
 end
