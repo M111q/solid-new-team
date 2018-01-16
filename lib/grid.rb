@@ -43,13 +43,30 @@ def status
 end
 # :reek:DuplicateMethodCall { max_calls: 2 }
 
+def digits_writer
+  minilacznik = "  "
+  lacznik = "   "
+  print("      ")
+  AXE_DIGITS.each do | a |
+    if a.to_i < 10
+       print ("#{a}#{lacznik}")
+       else
+         print ("#{a}#{minilacznik}")
+     end
+   end
+end
+
+
 def board
   Grid.row
-  Grid.row '    ' + AXE_DIGITS.join(' ')
+  #Grid.row '       ' + AXE_DIGITS.join(lacznik)
+  digits_writer
+    Grid.row
   @matrix.each_with_index do |grow, index|
-    Grid.row(" #{AXE_LETTERS[index]}  #{grow.join(' ')}  #{AXE_LETTERS[index]}")
+    Grid.row(" #{AXE_LETTERS[index]}   #{grow.join(' ')}  #{AXE_LETTERS[index]}")
   end
-  Grid.row '    ' + AXE_DIGITS.join(' ')
+  digits_writer
+#  Grid.row '    ' + AXE_DIGITS.join(' ')
 end
 
 def history
