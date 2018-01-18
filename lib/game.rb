@@ -16,6 +16,7 @@ class Game < Const
   STATES.each { |state| define_method("#{state}?") { @state == state } }
 
   def initialize
+
     @state = :initialized
     @command_line = nil
     @shots = Array.new
@@ -37,7 +38,7 @@ class Game < Const
     self
   end
 
-  def control_loop
+  def control_loop #OPEN CLOSED
     ready!
     loop do
       show
@@ -53,23 +54,37 @@ class Game < Const
     end
   end
 
-  def warunek
+  def warunek2
     #/^[A-J]([1-9]|10)$/
     cyferkadziesietne = $bok/10
     cyferkajednosci = $bok%10
 if $bok < 10
-  /^[A-O]([1-#{$bok}])$/
+  /^[A-J]([1-#{$bok}])$/ ##poprawic litery mozliwosc / blokowanie strzalow
  end
 if $bok >= 10
-  /^[A-O]([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/
+  /^[A-Z]([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/
 end
   end
 
+  def warunek
+    #/^[A-J]([1-9]|10)$/
+    cyferkadziesietne = $bok/10
+    cyferkajednosci = $bok%10
+  if $bok < 10
+  /^[A-#{($bok + 64).chr}]([1-#{$bok}])$/ ##poprawic litery mozliwosc / blokowanie strzalow
+
+elsif ($bok >= 10 && $bok < 27)
+  /^([A-#{($bok + 64).chr}]|[A-Z][A-#{($bok + 64).chr}])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/#wyciac znaki powyzej Z
+
+else
+    /^([A-Z}]|[A-Z][A-Z])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/#wyciac znaki powyzej Z
+  end
+end
 
 
   def show
     @grid_opponent.show
-
+print (@shots) #do sprawdzania
     if @debug
       @grid = Grid.new(@matrix, @inputs, @fleet)
       @grid.status_line = 'DEBUG MODE'
@@ -83,9 +98,7 @@ end
     @command_line = str.upcase
   end
 
-  def petla(ship)#nazwa
-  ship.location.each { |coordinates| @matrix[coordinates.first][coordinates[1]] = HIT_CHAR }
-  end
+
 
   private
 
@@ -142,7 +155,7 @@ end
     @hits_counter.zero?
   end
 
-  def convert(format_a1)
+  def convert(format_a1) ##zmienic by lykalo AA
     return unless format_a1
     x = format_a1[0]
     y = format_a1[1..-1]

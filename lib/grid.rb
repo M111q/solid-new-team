@@ -46,7 +46,7 @@ end
 def digits_writer
   minilacznik = "  "
   lacznik = "   "
-  print("      ")
+  print("     ")
   AXE_DIGITS.each do | a |
     if a.to_i < 10
        print ("#{a}#{lacznik}")
@@ -64,9 +64,9 @@ def board
     Grid.row
   @matrix.each_with_index do |grow, index|
     if index <26
-    Grid.row(" #{AXE_LETTERS[index]}   #{grow.join(' ')}  #{AXE_LETTERS[index]}")
+    Grid.row(" #{AXE_LETTERS[index]}   #{grow.join('   ')}  #{AXE_LETTERS[index]}")
   else
-    Grid.row(" #{AXE_LETTERS[index]}  #{grow.join(' ')}  #{AXE_LETTERS[index]}")
+    Grid.row(" #{AXE_LETTERS[index]}  #{grow.join('   ')}  #{AXE_LETTERS[index]}")
   end
 end
   digits_writer
