@@ -17,4 +17,4 @@ gry przy pomocy komendy 'Q'.
 #### Dodana funkcjonalność / zmiana: Wybór wielkości obszaru do gry w statki. 
 
 
-TODO refaktoryzacja + wyrównanie kolumn planszy
+TODO refaktoryzacja + open/close
