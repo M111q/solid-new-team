@@ -155,12 +155,25 @@ print (@shots) #do sprawdzania
     @hits_counter.zero?
   end
 
-  def convert(format_a1) ##zmienic by lykalo AA
+  def convert(format_a1) ##zmieniono
+
     return unless format_a1
+    if (format_a1[1] =~ /[[:alpha:]]/) == 0
+    x = format_a1[0..1]
+    y = format_a1[2..-1]
+    else
     x = format_a1[0]
     y = format_a1[1..-1]
+  end
+
+    if (format_a1[1] =~ /[[:alpha:]]/) == 0
+[((x[0].ord - 64)*26-1 + (x[1].ord - 64)) ,y.to_i - 1]
+    else
     [x.ord - 65, y.to_i - 1]
   end
+  end
+
+
 
   def ready!
     @state = :ready
