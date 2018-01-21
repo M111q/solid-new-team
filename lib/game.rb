@@ -54,31 +54,33 @@ class Game < Const
     end
   end
 
-  def warunek2
-    #/^[A-J]([1-9]|10)$/
-    cyferkadziesietne = $bok/10
-    cyferkajednosci = $bok%10
-if $bok < 10
-  /^[A-J]([1-#{$bok}])$/ ##poprawic litery mozliwosc / blokowanie strzalow
- end
-if $bok >= 10
-  /^[A-Z]([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/
-end
-  end
 
-  def warunek
+  def waruneko
     #/^[A-J]([1-9]|10)$/
     cyferkadziesietne = $bok/10
     cyferkajednosci = $bok%10
   if $bok < 10
   /^[A-#{($bok + 64).chr}]([1-#{$bok}])$/ ##poprawic litery mozliwosc / blokowanie strzalow
 
-elsif ($bok >= 10 && $bok < 27)
-  /^([A-#{($bok + 64).chr}]|[A-Z][A-#{($bok + 64).chr}])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/#wyciac znaki powyzej Z
-
-else
-    /^([A-Z}]|[A-Z][A-Z])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/#wyciac znaki powyzej Z
+else #pojedyncze litery
+  /^([A-#{($bok + 64).chr}]|[A-Z][A-#{($bok + 64).chr}])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/
   end
+end
+
+def warunek
+  #/^[A-J]([1-9]|10)$/
+  cyferkadziesietne = $bok/10
+  cyferkajednosci = $bok%10
+if $bok < 10
+/^[A-#{($bok + 64).chr}]([1-#{$bok}])$/
+
+elsif ($bok >= 10 && $bok < 27) #pojedyncze litery
+/^([A-#{($bok + 64).chr}])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/
+else #podwojne litery np 30 = 26 + 4 = [A][A - D] = 30 - 26 = 4
+  literapierwsza = ((($bok / 26.3).to_i) + 64).chr
+  literadruga = ((($bok % 26.3).round) + 64).chr
+  /^([A-Z]|[A-#{literapierwsza}][A-#{literadruga}])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/ ##chyba dobry
+end
 end
 
 
