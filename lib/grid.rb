@@ -1,7 +1,7 @@
 require_relative '../lib/constant.rb'
 
 # Grid class
-class Grid < Const
+class Grid < Constants
 attr_reader :status_line
 
 def initialize(matrix, inputs, fleet = nil)
@@ -9,6 +9,9 @@ def initialize(matrix, inputs, fleet = nil)
   @matrix = matrix
   @inputs = inputs
   @fleet = fleet
+  array_of_letters = ('A'..'CV').to_a
+  @AXE_LETTERS = ((array_of_letters[0]..array_of_letters[$board_size-1]).to_a).freeze
+  @AXE_DIGITS = ("1".."#{$board_size}").to_a
 end
 
 def status_line=(val)
@@ -47,7 +50,7 @@ def digits_writer #stworzono
   mini_space = "  "
   big_space = "   "
   print("     ")
-  AXE_DIGITS.each do | digit |
+  @AXE_DIGITS.each do | digit |
     if digit.to_i < 10
        print ("#{digit}#{big_space}")
        else
@@ -64,9 +67,9 @@ def board #zmieniono
     Grid.row
   @matrix.each_with_index do |grow, index|
     if index <26
-    Grid.row(" #{AXE_LETTERS[index]}   #{grow.join('   ')}  #{AXE_LETTERS[index]}")
+    Grid.row(" #{@AXE_LETTERS[index]}   #{grow.join('   ')}  #{@AXE_LETTERS[index]}")
   else
-    Grid.row(" #{AXE_LETTERS[index]}  #{grow.join('   ')}  #{AXE_LETTERS[index]}")
+    Grid.row(" #{@AXE_LETTERS[index]}  #{grow.join('   ')}  #{@AXE_LETTERS[index]}")
   end
 end
   digits_writer

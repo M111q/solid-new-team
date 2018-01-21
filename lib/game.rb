@@ -2,21 +2,14 @@ require_relative '../lib/grid.rb'
 require_relative '../lib/ship.rb'
 require_relative '../lib/constant.rb'
 # Game class. Main program class.
-class Game < Const
+class Game < Constants
   attr_reader :state
-
-  STATES = %i(initialized ready error terminated game_over).freeze
-
-  SHIPS_DEFS = [
-    { size: 4, type: 'Battleship' },
-    { size: 4, type: 'Battleship' },
-    { size: 5, type: 'Aircraft carrier' }
-  ].freeze
 
   STATES.each { |state| define_method("#{state}?") { @state == state } }
 
   def initialize
-
+    select_game
+    @SIZE = $board_size
     @state = :initialized
     @command_line = nil
     @shots = Array.new
@@ -25,10 +18,32 @@ class Game < Const
     play
   end
 
+def select_game
+  check = false
+  while check == false do
+    puts "\nWybierz wersje gry\nA. Gra klasyczna (pole 10x10)\nB. Gra z wyborem pola (Podana wartosc x Podana wartosc)."
+    input = gets.chomp.rstrip.upcase
+    if input == "A"
+      @wybrana_gra = ClassicGame
+      check = true
+      $board_size = 10
+    elsif input == "B"
+      @wybrana_gra = ExtraGame
+      puts("Podaj długość boku pola do gry")
+      $board_size = gets.chomp.to_i
+      check = true
+    else
+      puts "Aby wybrać podaj A lub B"
+    end
+  end
+end
+
+
+
   def play
     loop do
-      @matrix = Array.new(Grid::SIZE) { Array.new(Grid::SIZE, ' ') }
-      @matrix_opponent = Array.new(Grid::SIZE) { Array.new(Grid::SIZE, Grid::NO_SHOT_CHAR) }
+      @matrix = Array.new(@SIZE) { Array.new(@SIZE, ' ') }
+      @matrix_opponent = Array.new(@SIZE) { Array.new(@SIZE, NO_SHOT_CHAR) }
       @grid_opponent = Grid.new(@matrix_opponent, @inputs)
       @hits_counter = 0
       @debug = false
@@ -40,6 +55,7 @@ class Game < Const
 
   def control_loop #zmieniono
     ready!
+    warunek = TypeOfGame.new
     loop do
       show
       @inputs.push console
@@ -47,26 +63,14 @@ class Game < Const
       when 'D' then @debug = !@debug
       when 'Q' then terminate!
       when 'I' then initialize!
-      when key_validation then shoot
+      when warunek.key_validation(@wybrana_gra) then shoot
       else @grid_opponent.status_line = "Incorrect input #{@command_line}"
       end
       break if game_over? || terminated? || initialized? || ENV['RACK_ENV'] == 'test'
     end
   end
 
-def key_validation #stworzono
-  decimal_number = $board_size/10
-  digit = $board_size%10
-if $board_size < 10
-/^[A-#{($board_size + 64).chr}]([1-#{$board_size}])$/
-elsif ($board_size >= 10 && $board_size < 27) #pojedyncze litery
-/^([A-#{($board_size + 64).chr}])([1-9]|[1-#{decimal_number}][0-#{digit}])$/
-else #podwojne litery np 30 = 26 + 4 = [A][A - D] = 30 - 26 = 4
-  first_letter = ((($board_size / 26.3).to_i) + 64).chr
-  second_letter = ((($board_size % 26.3).round) + 64).chr
-  /^([A-Z]|[A-#{first_letter}][A-#{second_letter}])([1-9]|[1-#{decimal_number}][0-#{digit}])$/
-end
-end
+
 
 
   def show

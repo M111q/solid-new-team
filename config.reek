@@ -1,0 +1,12 @@
+---
+
+IrresponsibleModule:
+  enabled: false
+DuplicateMethodCall: 
+  enabled: false
+UncommunicativeVariableName:
+  enabled: false
+UncommunicativeParameterName: 
+  enabled: false
+TooManyStatements: 
+  enabled: false
