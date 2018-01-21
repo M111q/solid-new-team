@@ -38,7 +38,7 @@ class Game < Const
     self
   end
 
-  def control_loop #OPEN CLOSED
+  def control_loop #zmieniono
     ready!
     loop do
       show
@@ -47,46 +47,31 @@ class Game < Const
       when 'D' then @debug = !@debug
       when 'Q' then terminate!
       when 'I' then initialize!
-      when warunek then shoot
+      when key_validation then shoot
       else @grid_opponent.status_line = "Incorrect input #{@command_line}"
       end
       break if game_over? || terminated? || initialized? || ENV['RACK_ENV'] == 'test'
     end
   end
 
-
-  def waruneko
-    #/^[A-J]([1-9]|10)$/
-    cyferkadziesietne = $bok/10
-    cyferkajednosci = $bok%10
-  if $bok < 10
-  /^[A-#{($bok + 64).chr}]([1-#{$bok}])$/ ##poprawic litery mozliwosc / blokowanie strzalow
-
-else #pojedyncze litery
-  /^([A-#{($bok + 64).chr}]|[A-Z][A-#{($bok + 64).chr}])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/
-  end
-end
-
-def warunek
-  #/^[A-J]([1-9]|10)$/
-  cyferkadziesietne = $bok/10
-  cyferkajednosci = $bok%10
-if $bok < 10
-/^[A-#{($bok + 64).chr}]([1-#{$bok}])$/
-
-elsif ($bok >= 10 && $bok < 27) #pojedyncze litery
-/^([A-#{($bok + 64).chr}])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/
+def key_validation #stworzono
+  decimal_number = $board_size/10
+  digit = $board_size%10
+if $board_size < 10
+/^[A-#{($board_size + 64).chr}]([1-#{$board_size}])$/
+elsif ($board_size >= 10 && $board_size < 27) #pojedyncze litery
+/^([A-#{($board_size + 64).chr}])([1-9]|[1-#{decimal_number}][0-#{digit}])$/
 else #podwojne litery np 30 = 26 + 4 = [A][A - D] = 30 - 26 = 4
-  literapierwsza = ((($bok / 26.3).to_i) + 64).chr
-  literadruga = ((($bok % 26.3).round) + 64).chr
-  /^([A-Z]|[A-#{literapierwsza}][A-#{literadruga}])([1-9]|[1-#{cyferkadziesietne}][0-#{cyferkajednosci}])$/ ##chyba dobry
+  first_letter = ((($board_size / 26.3).to_i) + 64).chr
+  second_letter = ((($board_size % 26.3).round) + 64).chr
+  /^([A-Z]|[A-#{first_letter}][A-#{second_letter}])([1-9]|[1-#{decimal_number}][0-#{digit}])$/
 end
 end
 
 
   def show
     @grid_opponent.show
-print (@shots) #do sprawdzania
+    #print (@shots) #do sprawdzania
     if @debug
       @grid = Grid.new(@matrix, @inputs, @fleet)
       @grid.status_line = 'DEBUG MODE'
@@ -158,7 +143,6 @@ print (@shots) #do sprawdzania
   end
 
   def convert(format_a1) ##zmieniono
-
     return unless format_a1
     if (format_a1[1] =~ /[[:alpha:]]/) == 0
     x = format_a1[0..1]
@@ -167,7 +151,6 @@ print (@shots) #do sprawdzania
     x = format_a1[0]
     y = format_a1[1..-1]
   end
-
     if (format_a1[1] =~ /[[:alpha:]]/) == 0
 [((x[0].ord - 64)*26-1 + (x[1].ord - 64)) ,y.to_i - 1]
     else

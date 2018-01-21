@@ -43,21 +43,21 @@ def status
 end
 # :reek:DuplicateMethodCall { max_calls: 2 }
 
-def digits_writer
-  minilacznik = "  "
-  lacznik = "   "
+def digits_writer #stworzono
+  mini_space = "  "
+  big_space = "   "
   print("     ")
-  AXE_DIGITS.each do | a |
-    if a.to_i < 10
-       print ("#{a}#{lacznik}")
+  AXE_DIGITS.each do | digit |
+    if digit.to_i < 10
+       print ("#{digit}#{big_space}")
        else
-         print ("#{a}#{minilacznik}")
+         print ("#{digit}#{mini_space}")
      end
    end
 end
 
 
-def board
+def board #zmieniono
   Grid.row
   #Grid.row '       ' + AXE_DIGITS.join(lacznik)
   digits_writer
