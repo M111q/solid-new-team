@@ -61,7 +61,7 @@ def select_game
   end
 end
 ```
-Wydzielono metodę która określa przyjmowane przez gre komendy ("celowanie") - key_validation
+Extract Method - Wydzielono metodę która określa przyjmowane przez gre komendy ("celowanie") - key_validation
 ```ruby
 def control_loop #zmieniono
     ready!
@@ -114,3 +114,15 @@ end
 end
 ```
 
+Kod jest zamknięty na zmiany dzięki klasie TypeOfGame. Aby dopisać nowy typ gry nie musimy edytować naszych klas wystarczy utworzyć nową która bedzię dziedziczyć po klasie TypeOfGame.  
+
+## Tests  
+```
+bundle install  
+bundle exec rspec
+```
+  
+## Play  
+```
+ruby lib/console.rb
+```
