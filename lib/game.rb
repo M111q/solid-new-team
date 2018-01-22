@@ -18,28 +18,27 @@ class Game < Constants
     play
   end
 
-def select_game
-  return $board_size = 10, @wybrana_gra = ClassicGame if ENV['RACK_ENV'] == 'test'
-  check = false
-  while check == false do
-    puts "\nWybierz wersje gry\nA. Gra klasyczna (pole 10x10)\nB. Gra z wyborem pola (Podana wartosc x Podana wartosc)."
-    input = gets.chomp.rstrip.upcase
-    if input == "A"
-      @wybrana_gra = ClassicGame
-      check = true
-      $board_size = 10
-    elsif input == "B"
-      @wybrana_gra = ExtraGame
-      puts("Podaj długość boku pola do gry")
-      $board_size = gets.chomp.to_i
-      check = true
-    else
-      puts "Aby wybrać podaj A lub B"
+  def select_game
+    return $board_size = 10, @wybrana_gra = ClassicGame if ENV['RACK_ENV'] == 'test'
+    check = false
+    while check == false
+      puts "\nWybierz wersje gry\nA. Gra klasyczna (pole 10x10)\n
+      B. Gra z wyborem pola (Podana wartosc x Podana wartosc)."
+      input = gets.chomp.rstrip.upcase
+      if input == 'A'
+        @wybrana_gra = ClassicGame
+        check = true
+        $board_size = 10
+      elsif input == 'B'
+        @wybrana_gra = ExtraGame
+        puts('Podaj długość boku pola do gry')
+        $board_size = gets.chomp.to_i
+        check = true
+      else
+        puts 'Aby wybrać podaj A lub B'
+      end
     end
   end
-end
-
-
 
   def play
     loop do
@@ -54,9 +53,9 @@ end
     self
   end
 
-  def control_loop #zmieniono
+  def control_loop
     ready!
-    warunek = TypeOfGame.new
+    input_condition = TypeOfGame.new
     loop do
       show
       @inputs.push console
@@ -64,19 +63,15 @@ end
       when 'D' then @debug = !@debug
       when 'Q' then terminate!
       when 'I' then initialize!
-      when warunek.key_validation(@wybrana_gra) then shoot
+      when input_condition.key_validation(@wybrana_gra) then shoot
       else @grid_opponent.status_line = "Incorrect input #{@command_line}"
       end
       break if game_over? || terminated? || initialized? || ENV['RACK_ENV'] == 'test'
     end
   end
 
-
-
-
   def show
     @grid_opponent.show
-    #print (@shots) #do sprawdzania
     if @debug
       @grid = Grid.new(@matrix, @inputs, @fleet)
       @grid.status_line = 'DEBUG MODE'
@@ -90,8 +85,6 @@ end
     @command_line = str.upcase
   end
 
-
-
   private
 
   def create_fleet!
@@ -103,8 +96,6 @@ end
       ship.location.each { |coordinates| @matrix[coordinates[0]][coordinates[1]] = true }
     end
   end
-
-
 
   def console
     return nil if ENV['RACK_ENV'] == 'test'
@@ -150,20 +141,18 @@ end
   def convert(format_a1) ##zmieniono
     return unless format_a1
     if (format_a1[1] =~ /[[:alpha:]]/) == 0
-    x = format_a1[0..1]
-    y = format_a1[2..-1]
+      x = format_a1[0..1]
+      y = format_a1[2..-1]
     else
-    x = format_a1[0]
-    y = format_a1[1..-1]
-  end
+      x = format_a1[0]
+      y = format_a1[1..-1]
+    end
     if (format_a1[1] =~ /[[:alpha:]]/) == 0
-[((x[0].ord - 64)*26-1 + (x[1].ord - 64)) ,y.to_i - 1]
+      [((x[0].ord - 64) * 26 - 1 + (x[1].ord - 64)), y.to_i - 1]
     else
-    [x.ord - 65, y.to_i - 1]
+      [x.ord - 65, y.to_i - 1]
+    end
   end
-  end
-
-
 
   def ready!
     @state = :ready
