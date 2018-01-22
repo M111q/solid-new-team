@@ -19,6 +19,7 @@ class Game < Constants
   end
 
 def select_game
+  return $board_size = 10, @wybrana_gra = ClassicGame if ENV['RACK_ENV'] == 'test'
   check = false
   while check == false do
     puts "\nWybierz wersje gry\nA. Gra klasyczna (pole 10x10)\nB. Gra z wyborem pola (Podana wartosc x Podana wartosc)."
