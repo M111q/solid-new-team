@@ -1,8 +1,10 @@
-### solid-new-team
-
+# solid-new-team
+#### skład grupy:  
+#### Kamil Bielski
+#### Mikołaj Gierszewski
 
 Wykorzystany gem:: [Battleship](https://github.com/szymon33/battleship/)
-
+oraz [Battleship refaktoryzacja](https://github.com/ood2017/simplicity-M111q)
 
 Battleship – implementacja w języku Ruby popularnej gry w okręty (statki) znaleziony
 na Github.com. (/szymon33/battleship)
