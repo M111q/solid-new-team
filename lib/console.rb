@@ -6,7 +6,9 @@
 
 require_relative '../lib/game.rb'
 
+
 def welcome
+
   Grid.row '>> Welcome to Battleship'
   Grid.row
 end

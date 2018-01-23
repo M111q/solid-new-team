@@ -2,14 +2,20 @@ require_relative '../lib/grid.rb'
 require_relative '../lib/ship.rb'
 require_relative '../lib/constant.rb'
 # Game class. Main program class.
-class Game < Constants
+class Game < Const
   attr_reader :state
+
+  STATES = %i(initialized ready error terminated game_over).freeze
+
+  SHIPS_DEFS = [
+    { size: 4, type: 'Battleship' },
+    { size: 4, type: 'Battleship' },
+    { size: 5, type: 'Aircraft carrier' }
+  ].freeze
 
   STATES.each { |state| define_method("#{state}?") { @state == state } }
 
   def initialize
-    select_game
-    @SIZE = $board_size
     @state = :initialized
     @command_line = nil
     @shots = Array.new
@@ -18,32 +24,10 @@ class Game < Constants
     play
   end
 
-  def select_game
-    return $board_size = 10, @wybrana_gra = ClassicGame if ENV['RACK_ENV'] == 'test'
-    check = false
-    while check == false
-      puts "\nWybierz wersje gry\nA. Gra klasyczna (pole 10x10)\n
-      B. Gra z wyborem pola (Podana wartosc x Podana wartosc)."
-      input = gets.chomp.rstrip.upcase
-      if input == 'A'
-        @wybrana_gra = ClassicGame
-        check = true
-        $board_size = 10
-      elsif input == 'B'
-        @wybrana_gra = ExtraGame
-        puts('Podaj długość boku pola do gry')
-        $board_size = gets.chomp.to_i
-        check = true
-      else
-        puts 'Aby wybrać podaj A lub B'
-      end
-    end
-  end
-
   def play
     loop do
-      @matrix = Array.new(@SIZE) { Array.new(@SIZE, ' ') }
-      @matrix_opponent = Array.new(@SIZE) { Array.new(@SIZE, NO_SHOT_CHAR) }
+      @matrix = Array.new(Grid::SIZE) { Array.new(Grid::SIZE, ' ') }
+      @matrix_opponent = Array.new(Grid::SIZE) { Array.new(Grid::SIZE, Grid::NO_SHOT_CHAR) }
       @grid_opponent = Grid.new(@matrix_opponent, @inputs)
       @hits_counter = 0
       @debug = false
@@ -55,7 +39,6 @@ class Game < Constants
 
   def control_loop
     ready!
-    input_condition = TypeOfGame.new
     loop do
       show
       @inputs.push console
@@ -63,7 +46,7 @@ class Game < Constants
       when 'D' then @debug = !@debug
       when 'Q' then terminate!
       when 'I' then initialize!
-      when input_condition.key_validation(@wybrana_gra) then shoot
+      when /^[A-J]([1-9]|10)$/ then shoot
       else @grid_opponent.status_line = "Incorrect input #{@command_line}"
       end
       break if game_over? || terminated? || initialized? || ENV['RACK_ENV'] == 'test'
@@ -72,6 +55,7 @@ class Game < Constants
 
   def show
     @grid_opponent.show
+
     if @debug
       @grid = Grid.new(@matrix, @inputs, @fleet)
       @grid.status_line = 'DEBUG MODE'
@@ -85,6 +69,10 @@ class Game < Constants
     @command_line = str.upcase
   end
 
+  def petla(ship)#nazwa
+  ship.location.each { |coordinates| @matrix[coordinates.first][coordinates[1]] = HIT_CHAR }
+  end
+
   private
 
   def create_fleet!
@@ -96,6 +84,8 @@ class Game < Constants
       ship.location.each { |coordinates| @matrix[coordinates[0]][coordinates[1]] = true }
     end
   end
+
+
 
   def console
     return nil if ENV['RACK_ENV'] == 'test'
@@ -138,20 +128,11 @@ class Game < Constants
     @hits_counter.zero?
   end
 
-  def convert(format_a1) ##zmieniono
+  def convert(format_a1)
     return unless format_a1
-    if (format_a1[1] =~ /[[:alpha:]]/) == 0
-      x = format_a1[0..1]
-      y = format_a1[2..-1]
-    else
-      x = format_a1[0]
-      y = format_a1[1..-1]
-    end
-    if (format_a1[1] =~ /[[:alpha:]]/) == 0
-      [((x[0].ord - 64) * 26 - 1 + (x[1].ord - 64)), y.to_i - 1]
-    else
-      [x.ord - 65, y.to_i - 1]
-    end
+    x = format_a1[0]
+    y = format_a1[1..-1]
+    [x.ord - 65, y.to_i - 1]
   end
 
   def ready!
